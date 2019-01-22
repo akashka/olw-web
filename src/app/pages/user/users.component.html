@@ -1,0 +1,15 @@
+<nb-card>
+  <nb-card-header>
+    USERS
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table [settings]="settings" [source]="users" (edit)="editUser($event)" *ngIf="!isLoading">
+    </ng2-smart-table> 
+    <div *ngIf="isLoading">
+      <nb-card [nbSpinner]="true" nbSpinnerSize="xxlarge">
+        <nb-card-body> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> </nb-card-body>
+      </nb-card>
+    </div>
+  </nb-card-body>
+</nb-card>

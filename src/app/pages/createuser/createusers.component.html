@@ -1,0 +1,143 @@
+<nb-card>
+  <nb-card-header>Create User</nb-card-header>
+  <nb-card-body>
+    <form (ngSubmit)="save()" #form="ngForm" aria-labelledby="title" class="col-sm-12" *ngIf="!loader">
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="Center">Center:</label>
+            <div class="col-sm-9">
+              <select class="form-control" [(ngModel)]="center" #Center="ngModel" id="Center" name="Center" required [attr.aria-invalid]="Center.invalid && Center.touched ? true : null">
+                  <option *ngFor="let cen of centers" [value]="cen.center_code">
+                    {{cen.center_name}}
+                  </option>
+              </select>
+              <ng-container *ngIf="Center.invalid && Center.touched">
+                <p class="error-message" *ngIf="Center.errors?.required">
+                  Center is required!
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="Email">E-Mail:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="email" #Email="ngModel" name="Email" type="text" id="Email" class="form-control" placeholder="E-Mail"
+                [status]="Email.dirty ? (Email.invalid  ? 'danger' : 'success') : ''" required [attr.aria-invalid]="Email.invalid && Email.touched ? true : null"
+                (change)="onEmailChange();checkEmail()">
+              <ng-container *ngIf="(Email.invalid && Email.touched) || isExisting">
+                <p class="error-message" *ngIf="Email.errors?.required">
+                  E-Mail is required!
+                </p>
+                <p class="error-message" *ngIf="isExisting">
+                  Email already exists!
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="Password">Password:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="password" #Password="ngModel" name="Password" type="password" id="Password" class="form-control"
+                placeholder="Password" [status]="Password.dirty ? (Password.invalid  ? 'danger' : 'success') : ''" required
+                [attr.aria-invalid]="Password.invalid && Password.touched ? true : null" (change)="checkPassword()">
+              <ng-container *ngIf="Password.invalid && Password.touched ">
+                <p class="error-message" *ngIf="Password.errors?.required">
+                  Password is required!
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="confirmpassword">Confirm Password:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="confirm_password" #confirmpassword="ngModel" name="confirmpassword" type="password" id="confirmpassword"
+                class="form-control" placeholder="Confirm Password" [status]="confirmpassword.dirty ? (confirmpassword.invalid  ? 'danger' : 'success') : ''"
+                required [attr.aria-invalid]="confirmpassword.invalid && confirmpassword.touched ? true : null" (change)="checkPassword()">
+              <ng-container *ngIf="(confirmpassword.invalid && confirmpassword.touched) || !isPasswordMatching">
+                <p class="error-message" *ngIf="confirmpassword.errors?.required">
+                  Confirm Password is required!
+                </p>
+                <p class="error-message" *ngIf="!isPasswordMatching">
+                  Password do not match
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="Name">Name:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="name" #Name="ngModel" name="Name" type="text" id="Name" class="form-control" placeholder="Name"
+                [status]="Name.dirty ? (Name.invalid  ? 'danger' : 'success') : ''" required [attr.aria-invalid]="Name.invalid && Name.touched ? true : null">
+              <ng-container *ngIf="Name.invalid && Name.touched ">
+                <p class="error-message" *ngIf="Name.errors?.required">
+                  Name is required!
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="Role">Role:</label>
+            <div class="col-sm-9">
+              <div [(ngModel)]="role" name="Role" ngbRadioGroup class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                      <input ngbButton type="radio" value="counsellor"> Center
+                </label>
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                      <input ngbButton type="radio" value="dispatcher"> Dispatcher
+                </label>
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                      <input ngbButton type="radio" value="admin"> Admin
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="Active">Active:</label>
+            <div class="col-sm-9">
+              <div [(ngModel)]="active" name="active" ngbRadioGroup class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                      <input ngbButton type="radio" value="true"> Yes
+                </label>
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                      <input ngbButton type="radio" value="false"> No
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button nbButton status="success" [disabled]="submitted || !form.valid || isExisting || !isPasswordMatching" [class.btn-pulse]="submitted">
+        SAVE
+      </button>
+    </form>
+  </nb-card-body>
+  <div *ngIf="loader">
+    <nb-card [nbSpinner]="true" nbSpinnerSize="xxlarge">
+      <nb-card-body> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> </nb-card-body>
+    </nb-card>
+  </div>
+</nb-card>

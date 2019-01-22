@@ -1,0 +1,26 @@
+<nb-card>
+  <nb-card-header>
+    RESTORE STUDENTS
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table [settings]="settings" [source]="students" (delete)="delete($event, dialog)" *ngIf="!isLoading">
+    </ng2-smart-table> 
+     <div *ngIf="isLoading">
+      <nb-card [nbSpinner]="true" nbSpinnerSize="xxlarge">
+        <nb-card-body> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> </nb-card-body>
+      </nb-card>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<ng-template #dialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>Confirm Restore</nb-card-header>
+    <nb-card-body>{{ data }}</nb-card-body>
+    <nb-card-footer>
+      <button nbButton (click)="handle()">Confirm</button> &nbsp;
+      <button nbButton (click)="ref.close()">Cancel</button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

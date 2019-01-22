@@ -1,0 +1,286 @@
+<nb-card>
+
+  <nb-card-header>Confirm Student</nb-card-header>
+
+  <nb-card-body>
+    <div *ngIf="isLoading">
+      <nb-card [nbSpinner]="true" nbSpinnerSize="xxlarge">
+        <nb-card-body> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> </nb-card-body>
+      </nb-card>
+    </div>
+
+    <form *ngIf="!isLoading" (ngSubmit)="confirmStudent()" #form="ngForm" aria-labelledby="title" class="col-sm-12" [formGroup]="confirmForm">
+ 
+      <nb-card-body>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="Name">Name:</label>
+              <div class="col-sm-9">
+                <div class="form-control"> {{student.name}} </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="parentname">Parent Name:</label>
+              <div class="col-sm-9">
+                <div class="form-control"> {{student.parent_name}} </div>                
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="emailid">Email ID:</label>
+              <div class="col-sm-9">
+                <div class="form-control"> {{student.email_id}} </div>                
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="Dob">DOB:</label>
+              <div class="col-sm-9">
+                <div class="form-control"> {{student.dob}} </div>                
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="phonenumber">Phone Number:</label>
+              <div class="col-sm-9">
+                <div class="form-control"> {{student.phone_number}} </div>                                
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="alternatecontact">Alternate Contact:</label>
+              <div class="col-sm-9">
+                <div class="form-control"> {{student.alternate_contact}} </div>                                
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="Locality">Locality:</label>
+              <div class="col-sm-9">
+                <div class="form-control"> {{student.locality}} </div>                                
+              </div>
+            </div>
+          </div>
+        </div>
+      </nb-card-body> 
+
+      <nb-card-body>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="Gender">Gender:</label>
+              <div class="col-sm-9">
+                <div formControlName="gender" name="Gender" ngbRadioGroup class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                  <label ngbButtonLabel class="btn btn-outline-primary">
+                        <input ngbButton type="radio" value="Male"> Male
+                  </label>
+                  <label ngbButtonLabel class="btn btn-outline-primary">
+                        <input ngbButton type="radio" value="Female"> Female
+                  </label>
+                </div>
+                <ng-container *ngIf="!confirmForm.controls.gender.valid  && (confirmForm.controls.gender.dirty || submitAttempt)">
+                  <p class="error-message">
+                    Gender is required!
+                  </p>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="studyyear">Study Year:</label>
+              <div class="col-sm-9">
+                <div formControlName="study_year" name="studyyear" ngbRadioGroup class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                  <label ngbButtonLabel class="btn btn-outline-primary">
+                        <input ngbButton type="radio" value="2018-19"> 2018 - 2019
+                  </label>
+                  <label ngbButtonLabel class="btn btn-outline-primary">
+                        <input ngbButton type="radio" value="2019-20"> 2019 - 2020
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="classgroup">Class Group:</label>
+              <div class="col-sm-9">
+                <select formControlName="class_group" name="classgroup" class="form-control">
+                  <option value="Play Group"> Play Group </option>
+                  <option value="Nursery"> Nursery </option>
+                  <option value="LKG"> LKG </option>
+                  <option value="UKG"> UKG </option>
+                </select>
+                <ng-container *ngIf="!confirmForm.controls.class_group.valid  && (confirmForm.controls.class_group.dirty || submitAttempt)">
+                  <p class="error-message">
+                    Class Group is required!
+                  </p>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="classtype">Class Type:</label>
+              <div class="col-sm-9">
+                <select formControlName="class_type" name="classtype" class="form-control">
+                  <option value="Annual">Annual</option>
+                  <option value="Mid-term">Mid-term</option>
+                  <option value="Early start">Early start</option>
+                </select>
+                <ng-container *ngIf="!confirmForm.controls.class_type.valid  && (confirmForm.controls.class_type.dirty || submitAttempt)">
+                  <p class="error-message">
+                    Class Type is required!
+                  </p>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="needUniform">Uniform:</label>
+              <div class="col-sm-9">
+                <div formControlName="needUniform" (change)="onUniformChange()" name="needUniform" ngbRadioGroup required class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                  <label ngbButtonLabel class="btn btn-outline-primary">
+                        <input ngbButton type="radio" value=true> Yes
+                  </label>
+                  <label ngbButtonLabel class="btn btn-outline-primary">
+                        <input ngbButton type="radio" value=false> No
+                  </label>
+                </div>
+                <ng-container *ngIf="!confirmForm.controls.needUniform.valid  && (confirmForm.controls.needUniform.dirty || submitAttempt)">
+                  <p class="error-message">
+                    Please select if Uniform is required!
+                  </p>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="needShoe">Shoe:</label>
+              <div class="col-sm-9">
+                <div formControlName="needShoe" (ionChange)="onShoeChange()" name="needShoe" ngbRadioGroup required class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                  <label ngbButtonLabel class="btn btn-outline-primary">
+                        <input ngbButton type="radio" value=true> Yes
+                  </label>
+                  <label ngbButtonLabel class="btn btn-outline-primary">
+                        <input ngbButton type="radio" value=false> No
+                  </label>
+                </div>
+                <ng-container *ngIf="!confirmForm.controls.needShoe.valid  && (confirmForm.controls.needShoe.dirty || submitAttempt)">
+                  <p class="error-message">
+                    Please select if Uniform is required!
+                  </p>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="uniformsize">Uniform Size:</label>
+              <div class="col-sm-9" *ngIf="confirmForm.value.needUniform">
+                <select formControlName="uniform_size" name="classgroup" class="form-control">
+                  <option value=""> NA </option>
+                  <option value="18"> 18 </option>
+                  <option value="20"> 20 </option>
+                  <option value="22"> 22 </option>
+                  <option value="24"> 24 </option>
+                  <option value="26"> 26 </option>
+                  <option value="28"> 28 </option>
+                  <option value="30"> 30 </option>
+                  <option value="32"> 32 </option>
+                </select>
+              </div>
+              <div class="col-sm-9" *ngIf="!confirmForm.value.needUniform">
+                <select formControlName="uniform_size" name="classgroup" class="form-control" disabled>
+                  <option value=""> NA </option>
+                  <option value="18"> 18 </option>
+                  <option value="20"> 20 </option>
+                  <option value="22"> 22 </option>
+                  <option value="24"> 24 </option>
+                  <option value="26"> 26 </option>
+                  <option value="28"> 28 </option>
+                  <option value="30"> 30 </option>
+                  <option value="32"> 32 </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-control-group form-group row">
+              <label class="col-sm-3 form-control-label" for="shoesize">Shoe Size:</label>
+              <div class="col-sm-9" *ngIf="confirmForm.value.needShoe">
+                <select formControlName="shoe_size" name="shoesize" class="form-control">
+                  <option value="NA"> NA </option>
+                  <option value="6"> 6 </option>
+                  <option value="7"> 7 </option>
+                  <option value="8"> 8 </option>
+                  <option value="9"> 9 </option>
+                  <option value="10"> 10 </option>
+                  <option value="11"> 11 </option>
+                  <option value="12"> 12 </option>
+                  <option value="13"> 13 </option>
+                </select>
+              </div>
+              <div class="col-sm-9" *ngIf="!confirmForm.value.needShoe">
+                <select formControlName="shoe_size" name="shoesize" class="form-control" disabled>
+                  <option value="NA"> NA </option>
+                  <option value="6"> 6 </option>
+                  <option value="7"> 7 </option>
+                  <option value="8"> 8 </option>
+                  <option value="9"> 9 </option>
+                  <option value="10"> 10 </option>
+                  <option value="11"> 11 </option>
+                  <option value="12"> 12 </option>
+                  <option value="13"> 13 </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nb-card-body>
+      
+      <!-- <ion-toolbar color="primary" class="upload_button">
+        <ion-buttons>
+          <button ion-button icon-left (click)="getPicture()">
+              <ion-icon name="camera"></ion-icon>Select Image
+            </button>
+          <input type="file" #fileInput name="files[]" style="visibility: hidden; height: 0px" (change)="processWebImage($event)" />
+        </ion-buttons>
+      </ion-toolbar> -->
+
+      <button nbButton status="success" [disabled]="submitted || !form.valid" [class.btn-pulse]="submitted">
+        SAVE
+      </button>
+    </form>
+
+  </nb-card-body>
+
+</nb-card>

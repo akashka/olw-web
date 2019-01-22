@@ -1,0 +1,350 @@
+<nb-card>
+  <nb-card-header>Create Center</nb-card-header>
+  <nb-card-body>
+    <form (ngSubmit)="save()" #form="ngForm" aria-labelledby="title" class="col-sm-12" *ngIf="!loader">
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="CenterName">Center Name:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="center_name" #CenterName="ngModel" name="CenterName" type="text" id="CenterName" class="form-control"
+                placeholder="Center Name" [status]="CenterName.dirty ? (CenterName.invalid  ? 'danger' : 'success') : ''" required
+                [attr.aria-invalid]="CenterName.invalid && CenterName.touched ? true : null" (change)="generateCode()">
+              <ng-container *ngIf="CenterName.invalid && CenterName.touched ">
+                <p class="error-message" *ngIf="CenterName.errors?.required">
+                  Center Name is required!
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="CenterCode">Center Code:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="center_code" #CenterCode="ngModel" name="CenterCode" type="text" id="CenterCode" class="form-control"
+                placeholder="Center Code" [status]="CenterCode.dirty ? (CenterCode.invalid  ? 'danger' : 'success') : ''" required
+                disabled [attr.aria-invalid]="CenterCode.invalid && CenterCode.touched ? true : null">
+              <ng-container *ngIf="CenterCode.invalid && CenterCode.touched ">
+                <p class="error-message" *ngIf="CenterCode.errors?.required">
+                  Center Code is required!
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="CenterPhoneNo">Center Phone:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="center_phoneno" #CenterPhoneNo="ngModel" name="CenterPhoneNo" type="text" id="CenterPhoneNo"
+                class="form-control" placeholder="Center Phone No" [status]="CenterPhoneNo.dirty ? (CenterPhoneNo.invalid  ? 'danger' : 'success') : ''"
+                required [attr.aria-invalid]="CenterPhoneNo.invalid && CenterPhoneNo.touched ? true : null">
+              <ng-container *ngIf="CenterPhoneNo.invalid && CenterPhoneNo.touched ">
+                <p class="error-message" *ngIf="CenterPhoneNo.errors?.required">
+                  Center Phone No is required!
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="CenterEMail">Center E-Mail:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="center_email" #CenterEMail="ngModel" name="CenterEMail" type="text" id="CenterEMail" class="form-control"
+                placeholder="Center E-Mail" [status]="CenterEMail.dirty ? (CenterEMail.invalid  ? 'danger' : 'success') : ''"
+                required [attr.aria-invalid]="CenterEMail.invalid && CenterEMail.touched ? true : null" (change)="onEmailChange()">
+              <ng-container *ngIf="CenterEMail.invalid && CenterEMail.touched ">
+                <p class="error-message" *ngIf="CenterEMail.errors?.required">
+                  Center E-Mail is required!
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-control-group form-group row">
+        <label class="col-sm-2 form-control-label" for="CenterAddress">Center Address:</label>
+        <div class="col-sm-9">
+          <textarea rows="1" nbInput [(ngModel)]="center_address" #CenterAddress="ngModel" name="CenterAddress" type="text" id="CenterAddress"
+            class="form-control" placeholder="Center Address" [status]="CenterAddress.dirty ? (CenterAddress.invalid  ? 'danger' : 'success') : ''"
+            required [attr.aria-invalid]="CenterAddress.invalid && CenterAddress.touched ? true : null">
+           </textarea>
+          <ng-container *ngIf="CenterAddress.invalid && CenterAddress.touched ">
+            <p class="error-message" *ngIf="CenterAddress.errors?.required">
+              Center Address is required!
+            </p>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="Active">Active:</label>
+            <div class="col-sm-9">
+              <div [(ngModel)]="active" name="active" ngbRadioGroup class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                      <input ngbButton type="radio" value="true"> Yes
+                </label>
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                      <input ngbButton type="radio" value="false"> No
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="Cash">Cash:</label>
+            <div class="col-sm-9">
+              <div [(ngModel)]="cash" name="cash" ngbRadioGroup class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                      <input ngbButton type="radio" value="true"> Yes
+                </label>
+                <label ngbButtonLabel class="btn btn-outline-primary">
+                      <input ngbButton type="radio" value="false"> No
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <nb-card class="inline-form-card">
+            <nb-card-header>Playgroup Fee</nb-card-header>
+            <nb-card-body class="row">
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="PlaygroupAnnual">Annual:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="playgroup.annual" #PlaygroupAnnual="ngModel" name="PlaygroupAnnual" type="number" id="PlaygroupAnnual" 
+                      class="form-control" placeholder="Annual" [status]="PlaygroupAnnual.dirty ? (PlaygroupAnnual.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="PlaygroupAnnual.invalid && PlaygroupAnnual.touched ? true : null">
+                    <ng-container *ngIf="PlaygroupAnnual.invalid && PlaygroupAnnual.touched ">
+                      <p class="error-message" *ngIf="PlaygroupAnnual.errors?.required">
+                        Annual Fee is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="PlaygroupMidTerm">Mid-Term:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="playgroup.mid_term" #PlaygroupMidTerm="ngModel" name="PlaygroupMidTerm" type="number" id="PlaygroupMidTerm" 
+                      class="form-control" placeholder="Mid-Term" [status]="PlaygroupMidTerm.dirty ? (PlaygroupMidTerm.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="PlaygroupMidTerm.invalid && PlaygroupMidTerm.touched ? true : null">
+                    <ng-container *ngIf="PlaygroupMidTerm.invalid && PlaygroupMidTerm.touched ">
+                      <p class="error-message" *ngIf="PlaygroupMidTerm.errors?.required">
+                        Mid Term is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="PlaygroupEarlyStart">Early Start:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="playgroup.early_start" #PlaygroupEarlyStart="ngModel" name="PlaygroupEarlyStart" type="number" id="PlaygroupEarlyStart" 
+                      class="form-control" placeholder="Early Start" [status]="PlaygroupEarlyStart.dirty ? (PlaygroupEarlyStart.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="PlaygroupEarlyStart.invalid && PlaygroupEarlyStart.touched ? true : null">
+                    <ng-container *ngIf="PlaygroupEarlyStart.invalid && PlaygroupEarlyStart.touched ">
+                      <p class="error-message" *ngIf="PlaygroupEarlyStart.errors?.required">
+                        Early Start is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <nb-card class="inline-form-card">
+            <nb-card-header>Nursery Fee</nb-card-header>
+            <nb-card-body class="row">
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="NurseryAnnual">Annual:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="nursery.annual" #NurseryAnnual="ngModel" name="NurseryAnnual" type="number" id="NurseryAnnual" 
+                      class="form-control" placeholder="Annual" [status]="NurseryAnnual.dirty ? (NurseryAnnual.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="NurseryAnnual.invalid && NurseryAnnual.touched ? true : null">
+                    <ng-container *ngIf="NurseryAnnual.invalid && NurseryAnnual.touched ">
+                      <p class="error-message" *ngIf="NurseryAnnual.errors?.required">
+                        Annual Fee is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="NurseryMidTerm">Mid-Term:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="nursery.mid_term" #NurseryMidTerm="ngModel" name="NurseryMidTerm" type="number" id="NurseryMidTerm" 
+                      class="form-control" placeholder="Mid-Term" [status]="NurseryMidTerm.dirty ? (NurseryMidTerm.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="NurseryMidTerm.invalid && NurseryMidTerm.touched ? true : null">
+                    <ng-container *ngIf="NurseryMidTerm.invalid && NurseryMidTerm.touched ">
+                      <p class="error-message" *ngIf="NurseryMidTerm.errors?.required">
+                        Mid Term is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="NurseryEarlyStart">Early Start:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="nursery.early_start" #NurseryEarlyStart="ngModel" name="NurseryEarlyStart" type="number" id="NurseryEarlyStart" 
+                      class="form-control" placeholder="Early Start" [status]="NurseryEarlyStart.dirty ? (NurseryEarlyStart.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="NurseryEarlyStart.invalid && NurseryEarlyStart.touched ? true : null">
+                    <ng-container *ngIf="NurseryEarlyStart.invalid && NurseryEarlyStart.touched ">
+                      <p class="error-message" *ngIf="NurseryEarlyStart.errors?.required">
+                        Early Start is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <nb-card class="inline-form-card">
+            <nb-card-header>LKG Fee</nb-card-header>
+            <nb-card-body class="row">
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="lkgAnnual">Annual:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="lkg.annual" #lkgAnnual="ngModel" name="lkgAnnual" type="number" id="lkgAnnual" 
+                      class="form-control" placeholder="Annual" [status]="lkgAnnual.dirty ? (lkgAnnual.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="lkgAnnual.invalid && lkgAnnual.touched ? true : null">
+                    <ng-container *ngIf="lkgAnnual.invalid && lkgAnnual.touched ">
+                      <p class="error-message" *ngIf="lkgAnnual.errors?.required">
+                        Annual Fee is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="lkgMidTerm">Mid-Term:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="lkg.mid_term" #lkgMidTerm="ngModel" name="lkgMidTerm" type="number" id="lkgMidTerm" 
+                      class="form-control" placeholder="Mid-Term" [status]="lkgMidTerm.dirty ? (lkgMidTerm.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="lkgMidTerm.invalid && lkgMidTerm.touched ? true : null">
+                    <ng-container *ngIf="lkgMidTerm.invalid && lkgMidTerm.touched ">
+                      <p class="error-message" *ngIf="lkgMidTerm.errors?.required">
+                        Mid Term is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="lkgEarlyStart">Early Start:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="lkg.early_start" #lkgEarlyStart="ngModel" name="lkgEarlyStart" type="number" id="lkgEarlyStart" 
+                      class="form-control" placeholder="Early Start" [status]="lkgEarlyStart.dirty ? (lkgEarlyStart.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="lkgEarlyStart.invalid && lkgEarlyStart.touched ? true : null">
+                    <ng-container *ngIf="lkgEarlyStart.invalid && lkgEarlyStart.touched ">
+                      <p class="error-message" *ngIf="lkgEarlyStart.errors?.required">
+                        Early Start is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <nb-card class="inline-form-card">
+            <nb-card-header>UKG Fee</nb-card-header>
+            <nb-card-body class="row">
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="ukgAnnual">Annual:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="ukg.annual" #ukgAnnual="ngModel" name="ukgAnnual" type="number" id="ukgAnnual" 
+                      class="form-control" placeholder="Annual" [status]="ukgAnnual.dirty ? (ukgAnnual.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="ukgAnnual.invalid && ukgAnnual.touched ? true : null">
+                    <ng-container *ngIf="ukgAnnual.invalid && ukgAnnual.touched ">
+                      <p class="error-message" *ngIf="ukgAnnual.errors?.required">
+                        Annual Fee is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="ukgMidTerm">Mid-Term:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="ukg.mid_term" #ukgMidTerm="ngModel" name="ukgMidTerm" type="number" id="ukgMidTerm" 
+                      class="form-control" placeholder="Mid-Term" [status]="ukgMidTerm.dirty ? (ukgMidTerm.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="ukgMidTerm.invalid && ukgMidTerm.touched ? true : null">
+                    <ng-container *ngIf="ukgMidTerm.invalid && ukgMidTerm.touched ">
+                      <p class="error-message" *ngIf="ukgMidTerm.errors?.required">
+                        Mid Term is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-control-group form-group row">
+                  <label class="col-sm-5 form-control-label" for="ukgEarlyStart">Early Start:</label>
+                  <div class="col-sm-7">
+                    <input nbInput [(ngModel)]="ukg.early_start" #ukgEarlyStart="ngModel" name="ukgEarlyStart" type="number" id="ukgEarlyStart" 
+                      class="form-control" placeholder="Early Start" [status]="ukgEarlyStart.dirty ? (ukgEarlyStart.invalid  ? 'danger' : 'success') : ''"
+                      required [attr.aria-invalid]="ukgEarlyStart.invalid && ukgEarlyStart.touched ? true : null">
+                    <ng-container *ngIf="ukgEarlyStart.invalid && ukgEarlyStart.touched ">
+                      <p class="error-message" *ngIf="ukgEarlyStart.errors?.required">
+                        Early Start is required!
+                      </p>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+
+      <button nbButton status="success" [disabled]="submitted || !form.valid" [class.btn-pulse]="submitted">
+        SAVE
+      </button>
+    </form>
+    <div *ngIf="loader">
+      <nb-card [nbSpinner]="true" nbSpinnerSize="xxlarge">
+        <nb-card-body> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> </nb-card-body>
+      </nb-card>
+    </div>
+  </nb-card-body>
+</nb-card> 

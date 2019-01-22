@@ -1,0 +1,20 @@
+<nb-card>
+  <nb-card-header>
+    STUDENTS REPORTS
+    <div class="container-btn" [ngStyle]="{'float':'right'}">
+      <button class="btn btn-hero-secondary btn-demo" (click)="downloadReport()">DOWNLOAD</button>
+      &nbsp;
+      <button class="btn btn-hero-secondary btn-demo" (click)="mailReport()">SEND MAIL</button>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table [settings]="settings" [source]="students" *ngIf="!isLoading">
+    </ng2-smart-table>
+    <div *ngIf="isLoading">
+      <nb-card [nbSpinner]="true" nbSpinnerSize="xxlarge">
+        <nb-card-body> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> </nb-card-body>
+      </nb-card>
+    </div>
+  </nb-card-body>
+</nb-card>

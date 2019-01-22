@@ -1,0 +1,133 @@
+<nb-card>
+
+  <nb-card-header>
+    Indent Students
+    <div class="container-btn" [ngStyle]="{'float':'right'}">
+      <button class="btn btn-hero-secondary btn-demo" (click)="indentStudents(dialog)" *ngIf="indented_students.length">
+        Pay &#8377; {{total_amount}} ({{ indented_students.length }} Students)
+      </button> &nbsp;
+      <button class="btn btn-hero-secondary btn-demo" (click)="reset()" *ngIf="indented_students.length">RESET</button>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table [settings]="settings" [source]="students" (edit)="update($event)" *ngIf="!isLoading">
+    </ng2-smart-table>
+    <div *ngIf="isLoading">
+      <nb-card [nbSpinner]="true" nbSpinnerSize="xxlarge">
+        <nb-card-body> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> </nb-card-body>
+      </nb-card>
+    </div>
+  </nb-card-body>
+
+</nb-card>
+
+
+<ng-template #dialog let-data let-ref="dialogRef">
+  <nb-card>
+
+    <nb-card-header>Indent Details</nb-card-header>
+
+    <nb-card-body>
+      <div class="row">
+        <div class="col-sm-6" *ngIf="isCash">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="paymentmode">Payment Mode:</label>
+            <div class="col-sm-9">
+              <div [(ngModel)]="payment_mode" #paymentmode="ngModel" name="paymentmode" ngbRadioGroup class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                <label ngbButtonLabel class="btn btn-outline-primary">
+              <input ngbButton type="radio" value="cash"> Cash
+            </label>
+                <label ngbButtonLabel class="btn btn-outline-primary">
+              <input ngbButton type="radio" value="cheque"> Cheque
+            </label>
+                <label ngbButtonLabel class="btn btn-outline-primary">
+              <input ngbButton type="radio" value="online"> Online
+            </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6" *ngIf="!isCash">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="paymentmode">Payment Mode:</label>
+            <div class="col-sm-9">
+              <div [(ngModel)]="payment_mode" #paymentmode="ngModel" name="paymentmode" ngbRadioGroup class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                <label ngbButtonLabel class="btn btn-outline-primary">
+              <input ngbButton type="radio" value="cheque"> Cheque
+            </label>
+                <label ngbButtonLabel class="btn btn-outline-primary">
+              <input ngbButton type="radio" value="online"> Online
+            </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="totalamount">Amount:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="total_amount" #totalamount="ngModel" name="totalamount" type="text" id="totalamount" class="form-control"
+                disabled>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="paymentdate">Payment Date:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="payment_date" #paymentdate="ngModel" name="paymentdate" type="date" id="paymentdate" class="form-control"
+                placeholder="Payment Date" [status]="paymentdate.dirty ? (paymentdate.invalid  ? 'danger' : 'success') : ''"
+                required [attr.aria-invalid]="paymentdate.invalid && paymentdate.touched ? true : null">
+              <ng-container *ngIf="paymentdate.invalid && paymentdate.touched ">
+                <p class="error-message" *ngIf="paymentdate.errors?.required">
+                  Payment Date is required!
+                </p>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6" *ngIf="payment_mode != 'cash'">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="bankname">Bank Name:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="bank_name" #bankname="ngModel" name="bankname" type="text" id="bankname" class="form-control"
+                placeholder="Bank Name" [status]="bankname.dirty ? (bankname.invalid  ? 'danger' : 'success') : ''" [attr.aria-invalid]="bankname.invalid && bankname.touched ? true : null">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6" *ngIf="payment_mode == 'online'">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="transactionno">Transaction No:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="transaction_no" #transactionno="ngModel" name="transactionno" type="text" id="transactionno"
+                class="form-control" placeholder="Transaction No" [status]="transactionno.dirty ? (transactionno.invalid  ? 'danger' : 'success') : ''"
+                [attr.aria-invalid]="transactionno.invalid && transactionno.touched ? true : null">
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6" *ngIf="payment_mode == 'cheque'">
+          <div class="form-control-group form-group row">
+            <label class="col-sm-3 form-control-label" for="chequeno">Cheque No:</label>
+            <div class="col-sm-9">
+              <input nbInput [(ngModel)]="cheque_no" #chequeno="ngModel" name="chequeno" type="text" id="chequeno" class="form-control"
+                placeholder="Cheque No" [status]="chequeno.dirty ? (chequeno.invalid  ? 'danger' : 'success') : ''" [attr.aria-invalid]="chequeno.invalid && chequeno.touched ? true : null">
+            </div>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+
+    <nb-card-footer>
+      <button nbButton status="danger" (click)="ref.close()">Cancel</button>&nbsp;
+      <button nbButton status="success" (click)="confirmIndent()">Submit</button>
+    </nb-card-footer>
+
+  </nb-card>
+</ng-template>

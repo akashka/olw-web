@@ -1,0 +1,42 @@
+<nb-card>
+
+  <nb-card-header>
+    Dispatch Indentations
+    <div class="container-btn" [ngStyle]="{'float':'right'}">
+      <button class="btn btn-hero-secondary btn-demo" (click)="confirmIndentStudents()" *ngIf="show_button && confirm_dispatch"> Dispatch </button>      &nbsp;
+      <button class="btn btn-hero-secondary btn-demo" (click)="reset()" *ngIf="confirm_dispatch">RESET</button>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+
+    <ng2-smart-table [settings]="settings_indent" [source]="indentations" (edit)="update_indent($event)" *ngIf="!isLoading && !confirm_dispatch">
+    </ng2-smart-table>
+
+    <ng2-smart-table [settings]="settings_student" [source]="list_of_students" (edit)="update_student($event, dialog)" (delete)="delete_student($event, dialog)"
+      *ngIf="!isLoading && confirm_dispatch">
+    </ng2-smart-table>
+
+    <div *ngIf="isLoading">
+      <nb-card [nbSpinner]="true" nbSpinnerSize="xxlarge">
+        <nb-card-body> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> </nb-card-body>
+      </nb-card>
+    </div>
+
+  </nb-card-body>
+
+</nb-card>
+
+
+<ng-template #dialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>Remarks</nb-card-header>
+    <nb-card-body>
+      <textarea #remarks nbInput placeholder="Remarks"> </textarea>
+    </nb-card-body>
+    <nb-card-footer>
+      <button nbButton status="danger" (click)="ref.close()">Cancel</button>&nbsp;
+      <button nbButton status="success" (click)="handler(remarks.value)">Submit</button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>
