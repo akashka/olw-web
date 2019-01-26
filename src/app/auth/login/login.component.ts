@@ -78,7 +78,7 @@ export class LoginComponent {
       password: this.loginForm.value.password
     };
     this.authService.login(credentials).then((result) => {
-      this.router.navigate(['./pages/iot-dashboard']);
+      this.router.navigate(['./pages']);
       // this.loading = false;
     }, (err) => {
       this.errorMessage = "Authentication Failed!";

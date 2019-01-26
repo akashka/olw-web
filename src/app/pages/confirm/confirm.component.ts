@@ -5,6 +5,8 @@ import { Auth } from '../../providers/auth/auth';
 import { Center } from '../../providers/center/center';
 import { Students } from '../../providers/students/students';
 import { Router } from '@angular/router';
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 @Component({
   selector: 'confirm',
@@ -23,7 +25,7 @@ export class ConfirmComponent {
       delete: false
     },
     edit: {
-      editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-edit"></i> </button>',
+      editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-checkmark-circle"></i> </button>',
     },
     noDataMessage: '',
     columns: {
@@ -47,18 +49,10 @@ export class ConfirmComponent {
         title: 'Phone Number',
         type: 'String',
       },
-      alternate_contact: {
-        title: 'Alternate No.',
-        type: 'String',
-      },
       class_group: {
         title: 'Class Group',
         type: 'String',
-      },
-      class_type: {
-        title: 'Class Type',
-        type: 'String',
-      },
+      },                                                           
       dob: {
         title: 'DOB',
         type: 'Date',
@@ -90,7 +84,8 @@ export class ConfirmComponent {
     public centerService: Center,
     public studentService: Students,
     public authService: Auth,
-    public router: Router,
+    public router: Router,    
+    private toastrService: NbToastrService,
   ) { }
 
   ngOnInit() {
@@ -104,12 +99,30 @@ export class ConfirmComponent {
       this.isLoading = false;
     }, (err) => {
       console.log("not allowed");
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
     });
   }
 
   update(event) {
     var url = './pages/confirmstudent/' + event.data._id;
     this.router.navigate([url]);
+  }
+
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

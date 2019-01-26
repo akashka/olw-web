@@ -3,6 +3,8 @@ import * as _ from 'lodash'
 import { Center } from '../../providers/center/center';
 import { SmartTableService } from '../../@core/data/smart-table.service';
 import { Router } from '@angular/router'; 
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 @Component({
   selector: 'centers',
@@ -60,7 +62,8 @@ export class CentersComponent {
 
   constructor(
     public centerService: Center,
-    public router : Router,
+    public router : Router,    
+    private toastrService: NbToastrService,
   ) { }
 
   ngOnInit() {
@@ -76,12 +79,30 @@ export class CentersComponent {
       this.isLoading = false;
     }, (err) => {
       console.log(err);
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
     });
   }
 
   editCenter(event): void {
     var url = './pages/editcenters/' + event.data._id;
     this.router.navigate([url]);
+  }
+
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

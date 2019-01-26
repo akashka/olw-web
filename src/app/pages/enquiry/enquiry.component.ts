@@ -5,6 +5,9 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { Http, Headers } from '@angular/http';
 import { NbDialogService } from '@nebular/theme';
+import { Router } from '@angular/router'; 
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 // Providers
 import { Students } from '../../providers/students/students';
@@ -37,6 +40,8 @@ export class EnquiryComponent {
   public users: any;
   public studentsList: any;
   public matchingStudent: any;
+  stu;
+  confirm;
 
   public today_age_years: any;
   public today_age_months: any;
@@ -68,7 +73,9 @@ export class EnquiryComponent {
     public formBuilder: FormBuilder,
     public centerService: Center,
     public http: Http,
-    private dialogService: NbDialogService
+    private dialogService: NbDialogService,
+    private router: Router,    
+    private toastrService: NbToastrService,
   ) {
     this.studentForm = formBuilder.group({
       name: ['', Validators.compose([Validators.required])],
@@ -93,6 +100,7 @@ export class EnquiryComponent {
     this.studentService.getAllStudents().then((data) => {
       this.studentsList = data;
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       console.log("not allowed");
     });
   }
@@ -100,7 +108,8 @@ export class EnquiryComponent {
   ngOnInit() {
     this.loader = true;
     this.studentForm.controls['study_year'].setValue("2019-20");
-    this.onYearChange();
+    let dialog: any;
+    this.onYearChange(dialog);
     this.users = JSON.parse(this.storage.getItem('user'));
     this.centerService.searchCenter().then((centers) => {
       this.userCenter = _.find(centers, ['center_code', this.users.center]);
@@ -112,10 +121,12 @@ export class EnquiryComponent {
         this.loader = false;
       }, (err) => {
         console.log("not allowed");
+        this.showToast(NbToastStatus.DANGER, 'Error!', err);
         this.loader = false;
       });
     }, (err) => {
       console.log(err);
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       this.loader = false;
     });
   }
@@ -150,9 +161,11 @@ export class EnquiryComponent {
       this.loader = true;
       this.studentForm.value.dob = moment(this.studentForm.value.dob, "YYYY-MM-DD").toDate();
       this.studentService.createStudent(this.studentForm.value).then((result) => {
-        // this.search();
-        this.loader = true;
+        this.showToast(NbToastStatus.SUCCESS, 'Success!', 'Student Data Saved Successfully');
+        this.loader = false;
+        this.router.navigate(['/pages/confirm']);        
       }, (err) => {
+        this.showToast(NbToastStatus.DANGER, 'Error!', err);
       });
     }
   };
@@ -161,21 +174,21 @@ export class EnquiryComponent {
     this.studentForm.value.name = this.studentForm.value.name.toUpperCase();
   }
 
-  onEmailChange = () => {
+  onEmailChange = (dialog: TemplateRef<any>) => {
     this.studentForm.value.email_id = this.studentForm.value.email_id.toLowerCase();
-    this.checkMatching();
+    this.checkMatching(dialog);
   }
 
-  onPhoneChange = () => {
-    this.checkMatching();
+  onPhoneChange = (dialog: TemplateRef<any>) => {
+    this.checkMatching(dialog);
   }
 
-  onYearChange = () => {
+  onYearChange = (dialog: TemplateRef<any>) => {
     this.isCurrentYear = (this.studentForm.value.study_year == "2019-20") ? true : false;
-    if (this.studentForm.value.dob != '') this.onDobChange();
+    if (this.studentForm.value.dob != '') this.onDobChange(dialog);
   }
 
-  onDobChange = () => {
+  onDobChange = (dialog: TemplateRef<any>) => {
     var dob = this.studentForm.value.dob;
     var now = new Date();
     this.studentForm.value.today_age = this.getAge(dob, now);
@@ -206,7 +219,7 @@ export class EnquiryComponent {
     this.class_group = this.calculateClass(this.studentForm.value.month_age);
     this.studentForm.controls['class_group'].setValue(this.class_group);
 
-    this.checkMatching();
+    this.checkMatching(dialog);
   }
 
   public getAge = (birthday, tillday) => {
@@ -353,35 +366,22 @@ export class EnquiryComponent {
     return result;
   }
 
-  dialog: TemplateRef<any>;
-  showConfirm(stu) {
+  handler() {
+    var url = './pages/confirmstudent/' + this.stu._id;
+    this.router.navigate([url]);
+  }
+
+  showConfirm(stu, dialog: TemplateRef<any>) {
+    this.stu = stu;
     let msg = 'Name: ' + stu.name + '<br/> Email: ' + stu.email_id + "<br/> Phone: " + stu.phone_number + "<br/> Gender: " + stu.gender + "<br/> Parent: " + stu.parent_name + "<br/>Center: " + stu.center + "<br/> Confirm same student?";
-    let confirm = this.dialogService.open(
-      this.dialog, {
-        context: {
-          title: 'Similar Enquiry',
-          context: msg,
-          buttons: [
-            {
-              text: 'Yes! Confirm',
-              handler: () => {
-                // this.storage.set('confirmed_student', stu);
-                // this.navCtrl.setRoot(ConfirmPage);
-              }
-            },
-            {
-              text: 'No! Enquire',
-              handler: () => {
-                console.log('Agree clicked');
-              }
-            }
-          ]
-        },
+    this.confirm = this.dialogService.open(
+      dialog, {
+        context: msg,
       }
     );
   }
 
-  checkMatching() {
+  checkMatching(dialog: TemplateRef<any>) {
     var list = [];
     this.isMatching = false;
     this.matchingStudent = null;
@@ -429,16 +429,17 @@ export class EnquiryComponent {
         this.isMatching = true;
         this.counter = true;
         this.matchingStudent = resu[0];
-        this.showConfirm(this.matchingStudent);
+        this.showConfirm(this.matchingStudent, dialog);
       }
     }
   }
 
   onLocalityChange($event) {
     this.locationOptions = [];
-    if ($event._value.length > 4) {
-      var url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + $event._value +
-        "&types=geocode&key=AIzaSyDxiToPCcr2LL1EC_vkzYtBiQO_9kbIfqs";
+    if (this.studentForm.controls['locality'].value.length > 4) {
+      var url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + 
+                  this.studentForm.controls['locality'].value +
+                  "&types=geocode&key=AIzaSyDxiToPCcr2LL1EC_vkzYtBiQO_9kbIfqs";
       this.http.get(url)
         .subscribe(res => {
           let data = res.json();
@@ -449,6 +450,23 @@ export class EnquiryComponent {
 
   onLocSelect(description) {
     this.studentForm.controls['locality'].setValue(description);
+  }
+  
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

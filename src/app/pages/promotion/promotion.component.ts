@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { Indentation } from '../../providers/indentation/indentation';
 import * as moment from 'moment';
 import { NbDialogService } from '@nebular/theme';
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 @Component({
   selector: 'promotion',
@@ -24,52 +26,64 @@ export class PromotionComponent {
       delete: false
     },
     edit: {
-      editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-edit"></i> </button>',
+      editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-checkmark-circle"></i> </button>',
     },
     noDataMessage: '',
     columns: {
-      num: {
-        title: 'Indentation No',
+      student_id: {
+        title: 'Student ID',
         type: 'String',
       },
-      email: {
+      center: {
+        title: 'Center',
+        type: 'String',
+      },
+      name: {
+        title: 'Name',
+        type: 'String',
+      },
+      parent_name: {
+        title: 'Parent Name',
+        type: 'String',
+      },
+      phone_number: {
+        title: 'Phone Number',
+        type: 'String',
+      },
+      alternate_contact: {
+        title: 'Alternate No.',
+        type: 'String',
+      },
+      class_group: {
+        title: 'Class Group',
+        type: 'String',
+      },
+      class_type: {
+        title: 'Class Type',
+        type: 'String',
+      },
+      dob: {
+        title: 'DOB',
+        type: 'Date',
+      },
+      email_id: {
         title: 'Email ID',
         type: 'String',
       },
-      center_code: {
-        title: 'Center Code',
+      gender: {
+        title: 'Gender',
         type: 'String',
       },
-      total_amount: {
-        title: 'Total Amount',
-        type: 'String',
-      },
-      payment_mode: {
-        title: 'Payment Mode',
-        type: 'String',
-      },
-      payment_date: {
-        title: 'Payment Date',
-        type: 'String',
-      },
-      bank_name: {
-        title: 'Bank Name',
-        type: 'String',
-      },
-      transaction_no: {
-        title: 'Transaction No',
-        type: 'String',
-      },
-      cheque_no: {
-        title: 'Cheque No',
-        type: 'String',
-      },
-      deliveryTime: {
-        title: 'Delivery Time',
+      locality: {
+        title: 'Locality',
         type: 'String',
       },
       status: {
         title: 'Status',
+        type: 'String',
+      },
+      study_year: {
+        title: 'Study Year',
         type: 'String',
       },
     },
@@ -87,7 +101,8 @@ export class PromotionComponent {
     public authService: Auth,
     public router: Router,
     private dialogService: NbDialogService,
-    public indentationService: Indentation,
+    public indentationService: Indentation,    
+    private toastrService: NbToastrService,
   ) { }
 
   ngOnInit() {
@@ -100,6 +115,7 @@ export class PromotionComponent {
       this.students = _.sortBy(data, 'name');
       this.isLoading = false;
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       console.log("not allowed");
     });
   }
@@ -109,63 +125,21 @@ export class PromotionComponent {
     this.router.navigate([url]);
   }
 
-  // showMessage(student) {
-  // let alert = this.alertCtrl.create({
-  //   title: 'Details Missing',
-  //   inputs: [
-  //     {
-  //       name: 'parent_name',
-  //       placeholder: 'Parent Name'
-  //     },
-  //     {
-  //       name: 'locality',
-  //       placeholder: 'Locality'
-  //     }
-  //   ],
-  //   buttons: [
-  //     {
-  //       text: 'Cancel',
-  //       role: 'cancel',
-  //       handler: data => {
-  //         this.storage.set('confirmed_student', student);
-  //         this.navCtrl.setRoot(ConfirmPage);
-  //       }
-  //     },
-  //     {
-  //       text: 'Save',
-  //       handler: data => {
-  //         student.parent_name = data.parent_name;
-  //         student.locality = data.locality;
-  //         this.storage.set('confirmed_student', student);
-  //         this.navCtrl.setRoot(ConfirmPage);
-  //       }
-  //     }
-  //   ]
-  // });
-  // alert.present();
-  // }
-
-  // update(student) {
-  //   student.is_Indented = false;
-  //   student.is_Confirmed = false;
-  //   student.is_Delivered = false;
-  //   student.confirmation_date = null;
-  //   student.indentation_date = null;
-  //   student.delivery_date = null;
-
-  //   if (student.class_group === 'UKG') { student.class_group = 'UKG'; }
-  //   if (student.class_group === 'LKG') { student.class_group = 'UKG'; }
-  //   if (student.class_group === 'Nursery') { student.class_group = 'LKG'; }
-  //   if (student.class_group === 'Play Group') { student.class_group = 'Nursery'; }
-
-  //   if (student.study_year === '2019-20') { student.study_year = '2020-21'; }
-  //   if (student.study_year === '2018-19') { student.study_year = '2019-20'; }
-  //   if (student.study_year === '2017-18') { student.study_year = '2018-19'; }
-  //   if (student.study_year === '2016-17') { student.study_year = '2017-18'; }
-
-  //   this.storage.set('confirmed_student', student);
-  //   if (student.parent_name == "") this.showMessage(student);
-  //   else this.navCtrl.setRoot(ConfirmPage);
-  // }
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
+  }
 
 }

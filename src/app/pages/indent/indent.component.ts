@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { Indentation } from '../../providers/indentation/indentation';
 import * as moment from 'moment';
 import { NbDialogService } from '@nebular/theme';
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 @Component({
   selector: 'indent',
@@ -24,7 +26,7 @@ export class IndentComponent {
       delete: false
     },
     edit: {
-      editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-edit"></i> </button>',
+      editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-checkmark-circle"></i> </button>',
     },
     noDataMessage: '',
     columns: {
@@ -102,6 +104,7 @@ export class IndentComponent {
   students_amount = [];
   today_date = moment().format("YYYY-MM-DD");
   dia;
+  counter = 0;
 
   constructor(
     public centerService: Center,
@@ -109,7 +112,8 @@ export class IndentComponent {
     public authService: Auth,
     public router: Router,
     private dialogService: NbDialogService,
-    public indentationService: Indentation,
+    public indentationService: Indentation,    
+    private toastrService: NbToastrService,
   ) { }
 
   ngOnInit() {
@@ -129,6 +133,7 @@ export class IndentComponent {
       this.students = _.sortBy(this.students, 'enquiry_date');
       this.isLoading = false;
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       console.log("not allowed");
     });
     this.centerService.searchCenter().then((centers) => {
@@ -137,6 +142,8 @@ export class IndentComponent {
       this.center_code = user.center;
       this.user_center = _.find(centers, ['center_code', user.center]);
       this.isCash = this.user_center.cash;
+    }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
     });
   }
 
@@ -150,11 +157,13 @@ export class IndentComponent {
   }
 
   indent(student) {
-    this.indented_students.push(student);
-    for (var i = 0; i < this.students.length; i++) {
-      if (this.students[i] === student) this.students[i].indented = true;
+    if(student.study_year == '2018-19'){
+      this.indented_students.push(student);
+      for (var i = 0; i < this.students.length; i++) {
+        if (this.students[i] === student) this.students[i].indented = true;
+      }
+      this.addAmount(student);
     }
-    this.addAmount(student);
   }
 
   unindent(student) {
@@ -283,26 +292,51 @@ export class IndentComponent {
     }
 
     this.indentationService.createIndentation(indentation).then((result) => {
-      this.dia.close();
-      this.isLoading = false;
-      // this.presentToast('Indentation successfull');
+      for (var ik = 0; ik < this.indented_students.length; ik++) {
+        this.indented_students[ik].status = "indented";
+        this.indented_students[ik].is_Indented = true;
+        this.indented_students[ik].admin_edit = false;
+        delete this.indented_students[ik].indented;
+        this.showToast(NbToastStatus.SUCCESS, 'Success!', 'Indentation Completed Successfully');
+
+        this.studentService.updateStudent(this.indented_students[ik]).then((result) => {
+          this.counter++;
+          if(this.counter == this.indented_students.length) {
+            this.dia.close();
+            this.isLoading = false;
+            this.router.navigate(['/pages/confirm']);        
+          }
+        }, (err) => {
+          this.counter++;
+          if(this.counter == this.indented_students.length) {
+            this.dia.close();
+            this.isLoading = false;
+            this.router.navigate(['/pages/confirm']);        
+          }
+        });
+      }
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       this.isLoading = false;
-      // this.presentToast('Error! Please try again.');
     });
 
-    for (var ik = 0; ik < this.indented_students.length; ik++) {
-      this.indented_students[ik].status = "indented";
-      this.indented_students[ik].is_Indented = true;
-      this.indented_students[ik].admin_edit = false;
-      delete this.indented_students[ik].indented;
+  }
 
-      this.studentService.updateStudent(this.indented_students[ik]).then((result) => {
-        console.log('student data saved successfully');
-      }, (err) => {
-        console.log('student data saving failed');
-      });
-    }
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

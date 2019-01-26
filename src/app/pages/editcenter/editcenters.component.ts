@@ -3,6 +3,8 @@ import * as _ from 'lodash'
 import { Center } from '../../providers/center/center';
 import { SmartTableService } from '../../@core/data/smart-table.service';
 import { Router } from '@angular/router';
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 @Component({
   selector: 'editcenters',
@@ -51,7 +53,8 @@ export class EditcentersComponent {
 
   constructor(
     public centerService: Center,
-    public router: Router
+    public router: Router,    
+    private toastrService: NbToastrService,
   ) { }
 
   ngOnInit() {
@@ -77,9 +80,11 @@ export class EditcentersComponent {
     };
     this.submitted = true;
     this.centerService.updateCenter(center).then((result) => {
+      this.showToast(NbToastStatus.SUCCESS, 'Success!', 'Center is Updated Successfully');
       this.loader = false;
       this.router.navigate(['./pages/centers']);
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       this.loader = false;
     });
   }
@@ -144,6 +149,7 @@ export class EditcentersComponent {
       }
       this.loader = false;
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       console.log(err);
     });
   }
@@ -179,6 +185,23 @@ export class EditcentersComponent {
       if (temp.length > 2) str += temp[2];
     }
     this.center_code = str.toUpperCase();
+  }
+
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

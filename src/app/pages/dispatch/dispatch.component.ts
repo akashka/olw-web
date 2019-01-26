@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { Indentation } from '../../providers/indentation/indentation';
 import * as moment from 'moment';
 import { NbDialogService } from '@nebular/theme';
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 @Component({
   selector: 'dispatch',
@@ -24,7 +26,7 @@ export class DispatchComponent {
       delete: false
     },
     edit: {
-      editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-edit"></i> </button>',
+      editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-checkmark-circle"></i> </button>',
     },
     noDataMessage: '',
     columns: {
@@ -83,13 +85,21 @@ export class DispatchComponent {
       delete: true
     },
     edit: {
-      editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-edit"></i> </button>',
+      editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <h5> Full </h5> </button>',
     },
     delete: {
-      deleteButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-edit"></i> </button>',
+      deleteButtonContent: '<button class="btn btn-outline-primary btn-icon abcde" type="button"> <h5> Partial </h5> </button>',
     },
     noDataMessage: '',
     columns: {
+      is_dispatched: {
+        title: 'Dispatched already?',
+        type: 'String'
+      },
+      is_partial: {
+        title: 'Partial Diapatched Before?',
+        type: 'String',
+      },
       student_name: {
         title: 'Student Name',
         type: 'String',
@@ -143,7 +153,8 @@ export class DispatchComponent {
     public authService: Auth,
     public router: Router,
     private dialogService: NbDialogService,
-    public indentationService: Indentation,
+    public indentationService: Indentation,    
+    private toastrService: NbToastrService,
   ) { }
 
   ngOnInit() {
@@ -166,6 +177,7 @@ export class DispatchComponent {
       this.isLoading = false;
     }, (err) => {
       console.log("not allowed");
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
     });
   }
 
@@ -231,12 +243,12 @@ export class DispatchComponent {
         this.selected_indentation.students_amount[i].is_dispatched = false;
     }
     this.indentationService.updateIndentation(this.selected_indentation).then((result) => {
+      this.showToast(NbToastStatus.SUCCESS, 'Success!', 'Dispatch Done Successfully');
       this.isLoading = false;
-      // this.presentToast('Dispatch Data saved successfully');
-      // this.reset();
+      this.reset();
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       this.isLoading = false;
-      // this.presentToast('Error! Please try again.');
     });
   }
 
@@ -268,6 +280,23 @@ export class DispatchComponent {
       this.this_student.remarks = [data.msg];
     this.partialDispatch(this.this_student);
     this.dia.close();
+  }
+
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

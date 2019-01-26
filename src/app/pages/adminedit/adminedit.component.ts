@@ -6,6 +6,8 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { Http, Headers } from '@angular/http';
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 import { Auth } from '../../providers/auth/auth';
 import { Center } from '../../providers/center/center';
@@ -32,7 +34,8 @@ export class AdmineditComponent {
     public centerService: Center,
     public formBuilder: FormBuilder,
     public router: Router,
-    public http: Http,
+    public http: Http,    
+    private toastrService: NbToastrService,
   ) {
     this.studentForm = formBuilder.group({
       name: ['', Validators.compose([Validators.required])],
@@ -44,10 +47,10 @@ export class AdmineditComponent {
       alternate_contact: ['', Validators.compose([Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]*')])],
       locality: ['', Validators.compose([Validators.required])],
       study_year: ['', Validators.compose([Validators.required])],
-      class_group: ['', Validators.compose([Validators.required])],
-      class_type: ['', Validators.compose([Validators.required])],
-      uniform_size: ['', Validators.compose([Validators.required])],
-      shoe_size: ['', Validators.compose([Validators.required])]
+      class_group: [''],
+      class_type: [''],
+      uniform_size: [''],
+      shoe_size: ['']
     });
   }
 
@@ -78,6 +81,7 @@ export class AdmineditComponent {
       this.isLoading = false;
     }, (err) => {
       console.log("not allowed");
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
     });
   }
 
@@ -106,10 +110,12 @@ export class AdmineditComponent {
     this.student.shoe_size = this.studentForm.value.shoe_size;
     this.student.admin_edit = true;
     this.studentService.updateStudent(this.student).then((result) => {
+      this.showToast(NbToastStatus.SUCCESS, 'Success!', 'Student data is successfully updated');
       this.isLoading = false;
       this.router.navigate(['./pages/editstudent']);
     }, (err) => {
       this.isLoading = false;
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
     });
   };
 
@@ -128,6 +134,23 @@ export class AdmineditComponent {
 
   onLocSelect(description) {
     this.studentForm.controls['locality'].setValue(description);
+  }
+
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

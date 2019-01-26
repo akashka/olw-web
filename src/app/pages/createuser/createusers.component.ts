@@ -5,6 +5,8 @@ import { Auth } from '../../providers/auth/auth';
 import { Center } from '../../providers/center/center';
 import { Students } from '../../providers/students/students';
 import { Router } from '@angular/router'; 
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 @Component({
   selector: 'createusers',
@@ -40,7 +42,8 @@ export class CreateusersComponent {
     public centerService: Center,
     public studentService: Students,
     public authService: Auth,
-    public router: Router,
+    public router: Router,    
+    private toastrService: NbToastrService,
   ) { }
 
   ngOnInit() {
@@ -81,6 +84,7 @@ export class CreateusersComponent {
       });
       this.centers = result;
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       console.log(err);
     });
   }
@@ -96,6 +100,7 @@ export class CreateusersComponent {
       }
       this.loader = false;
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       console.log(err);
     });
   }
@@ -112,10 +117,12 @@ export class CreateusersComponent {
         active: this.active
       };
       this.authService.createAccount(details).then((result) => {
+        this.showToast(NbToastStatus.SUCCESS, 'Success!', 'User created Successfully');
         this.loader = false;
         this.router.navigate(['./pages/users']);
       }, (err) => {
         this.loader = false;
+        this.showToast(NbToastStatus.DANGER, 'Error!', err);
       });
     }
   }
@@ -136,6 +143,23 @@ export class CreateusersComponent {
     } else {
       this.isPasswordMatching = (this.password == this.confirm_password) ? true : false;
     }
+  }
+
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import * as _ from 'lodash'
 import { SmartTableService } from '../../@core/data/smart-table.service';
 import { Router } from '@angular/router'; 
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 import { Auth } from '../../providers/auth/auth';
 import { Center } from '../../providers/center/center';
@@ -59,6 +61,7 @@ export class UsersComponent {
     public authService: Auth,
     public centerService: Center,
     public router: Router,
+    private toastrService: NbToastrService,
   ) { }
 
   ngOnInit() {
@@ -75,6 +78,7 @@ export class UsersComponent {
       });
       this.centers = result;
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       console.log(err);
     });
   }
@@ -90,6 +94,7 @@ export class UsersComponent {
       }
       this.isLoading = false;    
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       console.log(err);
     });
   }
@@ -97,6 +102,23 @@ export class UsersComponent {
   editUser(event): void {
     var url = './pages/editusers/' + event.data._id;
     this.router.navigate([url]);
+  }
+
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

@@ -2,6 +2,8 @@ import { Component, TemplateRef } from '@angular/core';
 import * as _ from 'lodash'
 import { SmartTableService } from '../../@core/data/smart-table.service';
 import { NbDialogService } from '@nebular/theme';
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 import { Auth } from '../../providers/auth/auth';
 import { Center } from '../../providers/center/center';
@@ -96,7 +98,8 @@ export class RestoreComponent {
   constructor(
     public studentService: Students,
     public authService: Auth,
-    private dialogService: NbDialogService
+    private dialogService: NbDialogService,    
+    private toastrService: NbToastrService,
   ) {
   }
 
@@ -106,6 +109,7 @@ export class RestoreComponent {
       this.students = data;
       this.isLoading = false;
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       console.log("not allowed");
     });
   }
@@ -115,16 +119,19 @@ export class RestoreComponent {
     this.student.is_Active = true;
     this.student.admin_edit = true;
     this.studentService.updateStudent(this.student).then((result) => {
+      this.showToast(NbToastStatus.SUCCESS, 'Success!', 'Student is Restored Succesfully');
       this.studentService.getInactiveStudents().then((data) => {
         this.students = data;
         this.confirm.close();
         this.isLoading = false;        
       }, (err) => {
         console.log("err");
+        this.showToast(NbToastStatus.DANGER, 'Error!', err);
         this.isLoading = false;                
       });
     }, (err) => {
-        console.log("err");      
+        console.log("err");   
+        this.showToast(NbToastStatus.DANGER, 'Error!', err); 
         this.isLoading = false;                
     });
   }
@@ -136,6 +143,23 @@ export class RestoreComponent {
         context: 'Are you sure you want to restore this student data? The data can then be accessed by the center and the student.',
       }
     );
+  }
+
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

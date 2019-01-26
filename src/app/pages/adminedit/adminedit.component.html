@@ -48,7 +48,7 @@
           <div class="form-control-group form-group row">
             <label class="col-sm-3 form-control-label" for="studyyear">Study Year:</label>
             <div class="col-sm-9">
-              <select formControlName="study_year" name="studyyear" class="form-control" (change)="onYearChange()">
+              <select formControlName="study_year" name="studyyear" class="form-control">
                 <option value="2016-17"> 2016 - 2017 </option>
                 <option value="2017-18"> 2017 - 2018 </option>
                 <option value="2018-19"> 2018 - 2019 </option>
@@ -138,12 +138,7 @@
             <label class="col-sm-3 form-control-label" for="alternatecontact">Alternate Contact:</label>
             <div class="col-sm-9">
               <input nbInput formControlName="alternate_contact" name="alternatecontact" type="number" id="alternatecontact" class="form-control"
-                placeholder="Alternate Contact" required (change)="onPhoneChange()">
-              <ng-container *ngIf="!studentForm.controls.alternate_contact.valid  && (studentForm.controls.alternate_contact.dirty || submitAttempt)">
-                <p class="error-message">
-                  Alternate Contact is required!
-                </p>
-              </ng-container>
+                placeholder="Alternate Contact" (change)="onPhoneChange()">
             </div>
           </div>
         </div>
@@ -160,11 +155,6 @@
                 <option value="LKG"> LKG </option>
                 <option value="UKG"> UKG </option>
               </select>
-              <ng-container *ngIf="!studentForm.controls.class_group.valid  && (studentForm.controls.class_group.dirty || submitAttempt)">
-                <p class="error-message">
-                  Class Group is required!
-                </p>
-              </ng-container>
             </div>
           </div>
         </div>
@@ -177,11 +167,6 @@
                 <option value="Mid-term">Mid-term</option>
                 <option value="Early start">Early start</option>
               </select>
-              <ng-container *ngIf="!studentForm.controls.class_type.valid  && (studentForm.controls.class_type.dirty || submitAttempt)">
-                <p class="error-message">
-                  Class Type is required!
-                </p>
-              </ng-container>
             </div>
           </div>
         </div>
@@ -203,11 +188,6 @@
                 <option value="30"> 30 </option>
                 <option value="32"> 32 </option>
               </select>
-              <ng-container *ngIf="!studentForm.controls.uniform_size.valid  && (studentForm.controls.uniform_size.dirty || submitAttempt)">
-                <p class="error-message">
-                  Uniform Size is required!
-                </p>
-              </ng-container>
             </div>
           </div>
         </div>
@@ -226,11 +206,6 @@
                 <option value="12"> 12 </option>
                 <option value="13"> 13 </option>
               </select>
-              <ng-container *ngIf="!studentForm.controls.shoe_size.valid  && (studentForm.controls.shoe_size.dirty || submitAttempt)">
-                <p class="error-message">
-                  Shoe Size is required!
-                </p>
-              </ng-container>
             </div>
           </div>
         </div>

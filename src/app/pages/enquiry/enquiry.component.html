@@ -1,14 +1,14 @@
 <nb-card>
   <nb-card-header>New Enquiry</nb-card-header>
   <nb-card-body>
-    <form (ngSubmit)="addStudent()" #form="ngForm" aria-labelledby="title" class="col-sm-12" [formGroup]="studentForm">
+    <form *ngIf="!loader" (ngSubmit)="addStudent()" #form="ngForm" aria-labelledby="title" class="col-sm-12" [formGroup]="studentForm">
 
       <div class="row">
         <div class="col-sm-6">
           <div class="form-control-group form-group row">
             <label class="col-sm-3 form-control-label" for="studyyear">Study Year:</label>
             <div class="col-sm-9">
-              <div formControlName="study_year" name="studyyear" ngbRadioGroup (change)="onYearChange()" class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+              <div formControlName="study_year" name="studyyear" ngbRadioGroup (change)="onYearChange(dialog)" class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
                 <label ngbButtonLabel class="btn btn-outline-primary">
                       <input ngbButton type="radio" value="2018-19"> 2018 - 2019
                 </label>
@@ -82,7 +82,7 @@
             <label class="col-sm-3 form-control-label" for="emailid">Email ID:</label>
             <div class="col-sm-9">
               <input nbInput formControlName="email_id" name="emailid" type="email" id="emailid" class="form-control" placeholder="Email ID"
-                required (change)="onEmailChange()">
+                required (change)="onEmailChange(dialog)">
               <ng-container *ngIf="!studentForm.controls.email_id.valid  && (studentForm.controls.email_id.dirty || submitAttempt)">
                 <p class="error-message">
                   Email ID is required!
@@ -96,7 +96,7 @@
             <label class="col-sm-3 form-control-label" for="Dob">DOB:</label>
             <div class="col-sm-9">
               <input nbInput name="Dob" type="date" id="Dob" class="form-control" placeholder="Name" required displayFormat="DD/MMM/YYYY"
-                (change)="onDobChange()" pickerFormat="DD MMM YYYY" formControlName="dob">
+                (change)="onDobChange(dialog)" pickerFormat="DD MMM YYYY" formControlName="dob">
               <ng-container *ngIf="!studentForm.controls.dob.valid  && (studentForm.controls.dob.dirty || submitAttempt)">
                 <p class="error-message">
                   Please select valid date
@@ -108,21 +108,21 @@
       </div>
 
       <div class="row">
-        <div class="col-sm-4 form-control-group form-group row">
+        <div class="col-sm-3 form-control-group form-group row">
           <label class="col-sm-6 form-control-label">Age (Today):</label>
-          <div class="col-sm-6">            
+          <div class="col-sm-6" style="float: right;font-weight: bold;padding-top: 15px;font-size: 18px;">
             <span class="numbering">{{ today_age_years }} . {{ today_age_months }}</span>
           </div>
         </div>
-        <div class="col-sm-4">
-          <label class="col-sm-6 form-control-label">Age ({{ month_date }}):</label>
-          <div class="col-sm-6">                      
-            <span class="numbering">{{ month_age_years }} . {{ month_age_months }}</span> 
+        <div class="col-sm-5">
+          <label class="col-sm-8 form-control-label">Age ({{ month_date }}):</label>
+          <div class="col-sm-4" style="float: right;font-weight: bold;padding-top: 15px;font-size: 18px;">
+            <span class="numbering">{{ month_age_years }} . {{ month_age_months }}</span>
           </div>
         </div>
         <div class="col-sm-4">
           <label class="col-sm-6 form-control-label">Class:</label>
-          <div class="col-sm-6">                      
+          <div class="col-sm-6" style="float: right;font-weight: bold;padding-top: 15px;font-size: 18px;">
             <span class="numbering">{{ class_group }}</span>
           </div>
         </div>
@@ -134,7 +134,7 @@
             <label class="col-sm-3 form-control-label" for="phonenumber">Phone Number:</label>
             <div class="col-sm-9">
               <input nbInput formControlName="phone_number" name="phonenumber" type="number" id="phonenumber" class="form-control" placeholder="Phone Number"
-                required (change)="onPhoneChange()">
+                required (change)="onPhoneChange(dialog)">
               <ng-container *ngIf="!studentForm.controls.phone_number.valid  && (studentForm.controls.phone_number.dirty || submitAttempt)">
                 <p class="error-message">
                   Phone Number is required!
@@ -148,12 +148,7 @@
             <label class="col-sm-3 form-control-label" for="alternatecontact">Alternate Contact:</label>
             <div class="col-sm-9">
               <input nbInput formControlName="alternate_contact" name="alternatecontact" type="number" id="alternatecontact" class="form-control"
-                placeholder="Alternate Contact" required (change)="onPhoneChange()">
-              <ng-container *ngIf="!studentForm.controls.alternate_contact.valid  && (studentForm.controls.alternate_contact.dirty || submitAttempt)">
-                <p class="error-message">
-                  Alternate Contact is required!
-                </p>
-              </ng-container>
+                placeholder="Alternate Contact" (change)="onPhoneChange(dialog)">
             </div>
           </div>
         </div>
@@ -175,9 +170,9 @@
           </div>
         </div>
         <div class="col-sm-6">
-          <li *ngFor="let loc of locationOptions" (click)="onLocSelect(loc.description)">
+          <a *ngFor="let loc of locationOptions" (click)="onLocSelect(loc.description)">
             <p>{{loc.description}}</p>
-          </li>
+          </a>
         </div>
       </div>
 
@@ -194,6 +189,24 @@
         SAVE
       </button>
     </form>
-
+    <div *ngIf="loader">
+      <nb-card [nbSpinner]="true" nbSpinnerSize="xxlarge">
+        <nb-card-body> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> </nb-card-body>
+      </nb-card>
+    </div>
   </nb-card-body>
 </nb-card>
+
+
+<ng-template #dialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>Similar Enquiry Found</nb-card-header>
+    <nb-card-body>
+      <div [innerHTML]="data"></div>
+    </nb-card-body>
+    <nb-card-footer>
+      <button nbButton status="danger" (click)="ref.close()">Cancel</button>&nbsp;
+      <button nbButton status="success" (click)="ref.close();handler()">Submit</button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

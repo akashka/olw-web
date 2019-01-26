@@ -70,9 +70,9 @@
         </div>
 
         <div class="row">
-          <div class="col-sm-6">
+          <div class="col-sm-12">
             <div class="form-control-group form-group row">
-              <label class="col-sm-3 form-control-label" for="Locality">Locality:</label>
+              <label class="col-sm-2 form-control-label" for="Locality">Locality:</label>
               <div class="col-sm-9">
                 <div class="form-control"> {{student.locality}} </div>                                
               </div>
@@ -165,10 +165,10 @@
               <div class="col-sm-9">
                 <div formControlName="needUniform" (change)="onUniformChange()" name="needUniform" ngbRadioGroup required class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
                   <label ngbButtonLabel class="btn btn-outline-primary">
-                        <input ngbButton type="radio" value=true> Yes
+                        <input ngbButton type="radio" [value]=true> Yes
                   </label>
                   <label ngbButtonLabel class="btn btn-outline-primary">
-                        <input ngbButton type="radio" value=false> No
+                        <input ngbButton type="radio" [value]=false> No
                   </label>
                 </div>
                 <ng-container *ngIf="!confirmForm.controls.needUniform.valid  && (confirmForm.controls.needUniform.dirty || submitAttempt)">
@@ -183,12 +183,12 @@
             <div class="form-control-group form-group row">
               <label class="col-sm-3 form-control-label" for="needShoe">Shoe:</label>
               <div class="col-sm-9">
-                <div formControlName="needShoe" (ionChange)="onShoeChange()" name="needShoe" ngbRadioGroup required class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
+                <div formControlName="needShoe" (change)="onShoeChange()" name="needShoe" ngbRadioGroup required class="btn-group btn-group-toggle btn-outline-toggle-group btn-toggle-radio-group">
                   <label ngbButtonLabel class="btn btn-outline-primary">
-                        <input ngbButton type="radio" value=true> Yes
+                        <input ngbButton type="radio" [value]=true> Yes
                   </label>
                   <label ngbButtonLabel class="btn btn-outline-primary">
-                        <input ngbButton type="radio" value=false> No
+                        <input ngbButton type="radio" [value]=false> No
                   </label>
                 </div>
                 <ng-container *ngIf="!confirmForm.controls.needShoe.valid  && (confirmForm.controls.needShoe.dirty || submitAttempt)">
@@ -220,7 +220,7 @@
               </div>
               <div class="col-sm-9" *ngIf="!confirmForm.value.needUniform">
                 <select formControlName="uniform_size" name="classgroup" class="form-control" disabled>
-                  <option value=""> NA </option>
+                  <option value="NA"> NA </option>
                   <option value="18"> 18 </option>
                   <option value="20"> 20 </option>
                   <option value="22"> 22 </option>
@@ -238,7 +238,7 @@
               <label class="col-sm-3 form-control-label" for="shoesize">Shoe Size:</label>
               <div class="col-sm-9" *ngIf="confirmForm.value.needShoe">
                 <select formControlName="shoe_size" name="shoesize" class="form-control">
-                  <option value="NA"> NA </option>
+                  <option value=""> NA </option>
                   <option value="6"> 6 </option>
                   <option value="7"> 7 </option>
                   <option value="8"> 8 </option>

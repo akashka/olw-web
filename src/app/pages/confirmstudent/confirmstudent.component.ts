@@ -6,6 +6,9 @@ import { Center } from '../../providers/center/center';
 import { Students } from '../../providers/students/students';
 import { Router } from '@angular/router';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
+
 interface Window {
   resolveLocalFileSystemURL: any;
 }
@@ -32,7 +35,8 @@ export class ConfirmstudentComponent {
     public studentService: Students,
     public authService: Auth,
     public router: Router,
-    public formBuilder: FormBuilder,
+    public formBuilder: FormBuilder,    
+    private toastrService: NbToastrService,
   ) {
     this.confirmForm = formBuilder.group({
       gender: ['', Validators.compose([Validators.required])],
@@ -50,7 +54,7 @@ export class ConfirmstudentComponent {
 
   ngOnInit() {
     this.isLoading = true;
-    this.studentService.getStudents().then((data) => {
+    this.studentService.getAllStudents().then((data) => {
       let params = window.location.hash.split('/').pop();
       data = _.filter(data, function (o) {
         return (o._id == params);
@@ -89,11 +93,11 @@ export class ConfirmstudentComponent {
 
     this.studentService.updateStudent(this.student).then((result) => {
       this.isLoading = false;
-      // this.presentToast('student data saved successfully');
-      // this.goBack();
+      this.router.navigate(['/pages/confirm']); 
+      this.showToast(NbToastStatus.SUCCESS, 'Success!', 'Student is successfully Confirmed');
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);       
       this.isLoading = false;
-      // this.presentToast('Error! Please try again.');
     });
   };
 
@@ -198,6 +202,23 @@ export class ConfirmstudentComponent {
 
   getProfileImageStyle() {
     return ('url(' + this.confirmForm.controls['photo'].value + ')');
+  }
+  
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }

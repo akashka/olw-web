@@ -9,6 +9,8 @@ import { Indentation } from '../../providers/indentation/indentation';
 import * as moment from 'moment';
 import { NbDialogService } from '@nebular/theme';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { NbGlobalLogicalPosition, NbGlobalPhysicalPosition, NbGlobalPosition, NbToastrService } from '@nebular/theme';
+import { NbToastStatus } from '@nebular/theme/components/toastr/model';
 
 interface Window {
   resolveLocalFileSystemURL: any;
@@ -40,7 +42,8 @@ export class PromotestudentComponent {
     public router: Router,
     private dialogService: NbDialogService,
     public indentationService: Indentation,
-    public formBuilder: FormBuilder,
+    public formBuilder: FormBuilder,    
+    private toastrService: NbToastrService,
   ) {
     this.confirmForm = formBuilder.group({
       gender: ['', Validators.compose([Validators.required])],
@@ -91,6 +94,8 @@ export class PromotestudentComponent {
         this.confirmForm.controls['class_type'].setValue('Early start');
 
       this.isLoading = false;
+    }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
     });
   }
 
@@ -116,11 +121,11 @@ export class PromotestudentComponent {
 
     this.studentService.updateStudent(this.student).then((result) => {
       this.isLoading = false;
-      // this.presentToast('student data saved successfully');
-      // this.goBack();
+      this.showToast(NbToastStatus.SUCCESS, 'Success!', 'Student is Promoted Succesfully');
+      this.router.navigate(['/pages/promotion']);
     }, (err) => {
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       this.isLoading = false;
-      // this.presentToast('Error! Please try again.');
     });
   };
 
@@ -225,6 +230,23 @@ export class PromotestudentComponent {
 
   getProfileImageStyle() {
     return ('url(' + this.confirmForm.controls['photo'].value + ')');
+  }
+
+  private showToast(type: NbToastStatus, title: string, body: string) {
+    let audio = new Audio();
+    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.load();
+    audio.play();
+    const config = {
+      status: type,
+      destroyByClick: true,
+      duration: 5000,
+      hasIcon: true,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      preventDuplicates: false,
+    };
+    const titleContent = title ? `${title}` : '';
+    this.toastrService.show(body, `${titleContent}`, config);
   }
 
 }
