@@ -1,0 +1,15 @@
+:host /deep/ tr.hide-action td.ng2-smart-actions a{
+    display: none !important;
+}
+
+:host /deep/ tr.hide-action-indented td.ng2-smart-actions a{
+    display: none !important;
+}
+
+:host /deep/ tr.hide-action-indented {
+    background: green !important;
+}
+
+:host /deep/ tr.indented {
+    background: green !important;
+}

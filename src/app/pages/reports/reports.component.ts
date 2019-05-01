@@ -18,6 +18,39 @@ import * as moment from 'moment';
     nb-card {
       transform: translate3d(0, 0, 0);
     }
+    :host /deep/ tr.enquiry {
+      background: red !important;
+    }
+    :host /deep/ tr.confirmed {
+      background: orange !important;
+    }
+    :host /deep/ tr.indented {
+      background: green !important;
+    }
+    :host /deep/ .tooltip {
+      position: relative;
+      display: inline-block;
+      opacity: 1;
+      background: transparent;
+      font-size: 30px;
+      padding: 0px 30px;
+      vertical-align: center;
+    }
+    :host /deep/ .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      position: absolute;
+      z-index: 1;
+      font-size: 14px;
+    }
+    :host /deep/ .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
   `],
 })
 export class ReportsComponent {
@@ -26,11 +59,14 @@ export class ReportsComponent {
     actions: {
       add: false,
       edit: false,
-      delete: false
+      delete: false,
+    },
+    rowClassFunction: (row) => {
+      return row.data.status;
     },
     noDataMessage: '',
     columns: {
-            student_id: {
+      student_id: {
         title: 'Student ID',
         type: 'String',
       },

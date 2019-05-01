@@ -28,6 +28,19 @@ export class IndentComponent {
     edit: {
       editButtonContent: '<button class="btn btn-outline-primary btn-icon" type="button"> <i class="nb-checkmark-circle"></i> </button>',
     },
+    rowClassFunction: (row) => {
+      if (row.data.indented) {
+        if (row.data.study_year !== '2019-20') {
+          return 'hide-action-indented';
+        } else {
+          return 'indented';
+        }
+      } else {
+        if (row.data.study_year !== '2019-20') {
+          return 'hide-action';
+        }
+      }
+    },
     noDataMessage: '',
     columns: {
       student_id: {
@@ -157,7 +170,7 @@ export class IndentComponent {
   }
 
   indent(student) {
-    if(student.study_year == '2018-19'){
+    if(student.study_year == '2019-20'){
       this.indented_students.push(student);
       for (var i = 0; i < this.students.length; i++) {
         if (this.students[i] === student) this.students[i].indented = true;
