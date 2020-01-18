@@ -108,9 +108,9 @@ export class PromotionComponent {
   ngOnInit() {
     this.isLoading = true;
     this.studentService.getStudents().then((data) => {
-      var user = JSON.parse(this.storage.getItem('user'));
+      let user = JSON.parse(this.storage.getItem('user'));
       data = _.filter(data, function (o) {
-        return (o.status == 'indented' && o.is_Indented && o.study_year == '2018-19' && o.center == user.center);
+        return (o.status == 'indented' && o.is_Indented && o.study_year === '2019-20' && o.center === user.center);
       });
       this.students = _.sortBy(data, 'name');
       this.isLoading = false;

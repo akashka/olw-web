@@ -116,7 +116,7 @@ export class EnquiryComponent {
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     this.loader = true;
-    this.studentForm.controls['study_year'].setValue('2019-20');
+    this.studentForm.controls['study_year'].setValue('2020-21');
     // tslint:disable-next-line:prefer-const
     let dialog: any;
     this.onYearChange(dialog);
@@ -152,7 +152,7 @@ export class EnquiryComponent {
     this.studentForm.controls['class_group'].setValue('');
     this.studentForm.controls['photo'].setValue('');
     this.studentForm.controls['dob'].setValue('');
-    this.studentForm.controls['study_year'].setValue('2019-20');
+    this.studentForm.controls['study_year'].setValue('2020-21');
     this.today_age_years = '';
     this.today_age_months = '';
     this.today_age_days = '';
@@ -192,7 +192,7 @@ export class EnquiryComponent {
   }
 
   onYearChange = (dialog: TemplateRef<any>) => {
-    this.isCurrentYear = (this.studentForm.value.study_year === '2019-20') ? true : false;
+    this.isCurrentYear = (this.studentForm.value.study_year === '2020-21') ? true : false;
     if (this.studentForm.value.dob !== '') this.onDobChange(dialog);
   }
 

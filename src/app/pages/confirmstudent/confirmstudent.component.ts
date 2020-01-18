@@ -35,7 +35,7 @@ export class ConfirmstudentComponent {
     public studentService: Students,
     public authService: Auth,
     public router: Router,
-    public formBuilder: FormBuilder,    
+    public formBuilder: FormBuilder,
     private toastrService: NbToastrService,
   ) {
     this.confirmForm = formBuilder.group({
@@ -55,18 +55,30 @@ export class ConfirmstudentComponent {
   ngOnInit() {
     this.isLoading = true;
     this.studentService.getAllStudents().then((data) => {
-      let params = window.location.hash.split('/').pop();
+      const params = window.location.hash.split('/').pop();
       data = _.filter(data, function (o) {
         return (o._id == params);
       });
       this.student = data[0];
       this.confirmForm.controls['gender'].setValue(this.student.gender);
-      this.confirmForm.controls['study_year'].setValue(this.student.study_year);
-      this.confirmForm.controls['class_group'].setValue(this.student.class_group);
       this.confirmForm.controls['student_id'].setValue(this.student.student_id);
       this.confirmForm.controls['photo'].setValue(this.student.photo);
-      if (this.student.study_year == '2019-20')
+      if (this.student.study_year === '2020-21')
         this.confirmForm.controls['class_type'].setValue('Early start');
+      if (this.student.study_year === '2019-20') {
+        if (this.student.class_group === 'Play Group')
+          this.student.class_group = 'Nursery';
+        else if (this.student.class_group === 'Nursery')
+          this.student.class_group = 'LKG';
+        else if (this.student.class_group === 'LKG')
+          this.student.class_group = 'UKG';
+        else if (this.student.class_group === 'UKG')
+          this.student.class_group = 'UKG';
+        else this.student.class_group = 'Play Group';
+        this.student.study_year = '2020-21';
+      }
+      this.confirmForm.controls['study_year'].setValue(this.student.study_year);
+      this.confirmForm.controls['class_group'].setValue(this.student.class_group);
       this.isLoading = false;
     });
   }
@@ -77,7 +89,7 @@ export class ConfirmstudentComponent {
     this.student.gender = this.confirmForm.value.gender;
     this.student.study_year = this.confirmForm.value.study_year;
     this.student.class_group = this.confirmForm.value.class_group;
-    this.student.status = "confirmed";
+    this.student.status = 'confirmed';
     this.student.is_Confirmed = true;
     this.student.photo = this.confirmForm.value.photo;
     this.student.class_type = this.confirmForm.value.class_type;
@@ -93,10 +105,10 @@ export class ConfirmstudentComponent {
 
     this.studentService.updateStudent(this.student).then((result) => {
       this.isLoading = false;
-      this.router.navigate(['/pages/confirm']); 
+      this.router.navigate(['/pages/confirm']);
       this.showToast(NbToastStatus.SUCCESS, 'Success!', 'Student is successfully Confirmed');
     }, (err) => {
-      this.showToast(NbToastStatus.DANGER, 'Error!', err);       
+      this.showToast(NbToastStatus.DANGER, 'Error!', err);
       this.isLoading = false;
     });
   };
@@ -116,24 +128,24 @@ export class ConfirmstudentComponent {
   }
 
   onYearChange() {
-    if (this.confirmForm.controls['study_year'].value == '2019-20') {
-      if (this.confirmForm.controls['class_group'].value == "Play Group")
+    if (this.confirmForm.controls['study_year'].value == '2021-22') {
+      if (this.confirmForm.controls['class_group'].value == 'Play Group')
         this.confirmForm.controls['class_group'].setValue('Nursery');
-      else if (this.confirmForm.controls['class_group'].value == "Nursery")
+      else if (this.confirmForm.controls['class_group'].value == 'Nursery')
         this.confirmForm.controls['class_group'].setValue('LKG');
-      else if (this.confirmForm.controls['class_group'].value == "LKG")
+      else if (this.confirmForm.controls['class_group'].value == 'LKG')
         this.confirmForm.controls['class_group'].setValue('UKG');
-      else if (this.confirmForm.controls['class_group'].value == "UKG")
+      else if (this.confirmForm.controls['class_group'].value == 'UKG')
         this.confirmForm.controls['class_group'].setValue('UKG');
       else this.confirmForm.controls['class_group'].setValue('Play Group');
     } else {
-      if (this.confirmForm.controls['class_group'].value == "Play Group")
+      if (this.confirmForm.controls['class_group'].value == 'Play Group')
         this.confirmForm.controls['class_group'].setValue('Play Group');
-      else if (this.confirmForm.controls['class_group'].value == "Nursery")
+      else if (this.confirmForm.controls['class_group'].value == 'Nursery')
         this.confirmForm.controls['class_group'].setValue('Play Group');
-      else if (this.confirmForm.controls['class_group'].value == "LKG")
+      else if (this.confirmForm.controls['class_group'].value == 'LKG')
         this.confirmForm.controls['class_group'].setValue('Nursery');
-      else if (this.confirmForm.controls['class_group'].value == "UKG")
+      else if (this.confirmForm.controls['class_group'].value == 'UKG')
         this.confirmForm.controls['class_group'].setValue('LKG');
       else this.confirmForm.controls['class_group'].setValue('UKG');
     }
@@ -142,7 +154,7 @@ export class ConfirmstudentComponent {
   private createFileName() {
     var d = new Date(),
       n = d.getTime(),
-      newFileName = n + ".jpg";
+      newFileName = n + '.jpg';
     return newFileName;
   }
 
@@ -203,10 +215,10 @@ export class ConfirmstudentComponent {
   getProfileImageStyle() {
     return ('url(' + this.confirmForm.controls['photo'].value + ')');
   }
-  
+
   private showToast(type: NbToastStatus, title: string, body: string) {
     let audio = new Audio();
-    audio.src = "http://www.noiseaddicts.com/samples_1w72b820/3724.mp3";
+    audio.src = 'http://www.noiseaddicts.com/samples_1w72b820/3724.mp3';
     audio.load();
     audio.play();
     const config = {

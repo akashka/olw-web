@@ -80,17 +80,17 @@ export class PromotestudentComponent {
       if (this.student.class_group === 'Nursery') { this.student.class_group = 'LKG'; }
       if (this.student.class_group === 'Play Group') { this.student.class_group = 'Nursery'; }
 
+      if (this.student.study_year === '2021-22') { this.student.study_year = '2022-23'; }
+      if (this.student.study_year === '2020-21') { this.student.study_year = '2021-22'; }
       if (this.student.study_year === '2019-20') { this.student.study_year = '2020-21'; }
       if (this.student.study_year === '2018-19') { this.student.study_year = '2019-20'; }
-      if (this.student.study_year === '2017-18') { this.student.study_year = '2018-19'; }
-      if (this.student.study_year === '2016-17') { this.student.study_year = '2017-18'; }
 
       this.confirmForm.controls['gender'].setValue(this.student.gender);
       this.confirmForm.controls['study_year'].setValue(this.student.study_year);
       this.confirmForm.controls['class_group'].setValue(this.student.class_group);
       this.confirmForm.controls['student_id'].setValue(this.student.student_id);
       this.confirmForm.controls['photo'].setValue(this.student.photo);
-      if (this.student.study_year == '2019-20')
+      if (this.student.study_year == '2021-22')
         this.confirmForm.controls['class_type'].setValue('Early start');
 
       this.isLoading = false;
@@ -144,7 +144,7 @@ export class PromotestudentComponent {
   }
 
   onYearChange() {
-    if (this.confirmForm.controls['study_year'].value == '2019-20') {
+    if (this.confirmForm.controls['study_year'].value == '2020-21') {
       if (this.confirmForm.controls['class_group'].value == "Play Group")
         this.confirmForm.controls['class_group'].setValue('Nursery');
       else if (this.confirmForm.controls['class_group'].value == "Nursery")
